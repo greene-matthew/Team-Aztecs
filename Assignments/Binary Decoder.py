@@ -1,3 +1,11 @@
+# Aztecs
+# Behram Dossabhoy, Matthew Greene, Prasil Mainali, Logan Mccarthy, Joshua Mendoza, Louis Miller, Tracy Samanie
+# 29 March 2019
+# Binary Decoder: Decode a string of binary, either in base-7 or base-8
+# Github: https://github.com/greene-matthew/Team-Aztecs
+
+
+
 import sys
 import re
 
