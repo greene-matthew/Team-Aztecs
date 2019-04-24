@@ -3,14 +3,26 @@
 import socket
 import sys
 from time import time
+from binascii import unhexlify
 
-ONE = 0.25
+ONE = 0.1
 Bits = 8
 
 
-def convertToAscci(binaryString):
-    num = int(binaryString, 2)
-    return chr(num)
+def convertToAscci(covert_bin):
+    covert = ""
+    i = 0
+    while (i < len(covert_bin)):
+    # process one byte at a time
+        b = covert_bin[i:i + 8]
+    # convert it to ASCII
+        n = int("0b{}".format(b), 2)
+        try:
+            covert += unhexlify("{0:x}".format(n))
+        except TypeError:
+            covert += "?"
+    # stop at the string "EOF"
+        i += 8
 
 
 def convertTimesToBinary(times):
@@ -19,24 +31,28 @@ def convertTimesToBinary(times):
     for i in times:
         print(i)
         if (i >= ONE):
-            convert_bin += "0"
-        else:
             convert_bin += "1"
+        else:
+            convert_bin += "0"
+    print convert_bin
     return convert_bin
 
 
-def binaryToAscci(convert_bin):
-    count = 0
-    message = ""
-
-    while count <= len(convert_bin):
-        message += convertToAscci(convert_bin[count:count + Bits])
-        count += Bits
-
-    return message
-
-
-
+def binaryToAscci(covert_bin):
+    covert = ""
+    i = 0
+    while (i < len(covert_bin)):
+        # process one byte at a time
+        b = covert_bin[i:i + 8]
+        # convert it to ASCII
+        n = int("0b{}".format(b), 2)
+        try:
+            covert += unhexlify("{0:x}".format(n))
+        except TypeError:
+            covert += "?"
+        # stop at the string "EOF"
+        i += 8
+    return covert
 
 
 def main():
@@ -47,17 +63,17 @@ def main():
 
     #This code will take the time between each char and put it into an array
     times = []
-    t0 = time()
+
     data = s.recv(4096)
-    t1 = time()
+
     while (data.rstrip("\n") != "EOF"):
-        times.append(round(t1 - t0, 3))
+
         sys.stdout.write((data))
         sys.stdout.flush()
         t0 = time()
         data = s.recv(4096)
         t1 = time()
-
+        times.append(round(t1 - t0, 3))
     s.close()
 
     # Below is an array of the times bewteen each char
