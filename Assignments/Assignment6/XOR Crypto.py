@@ -1,26 +1,29 @@
-import os
 import binascii
 
-key = open("key2", "rb")
-message = open("ciphertext2", "rb")
+key = open("key", "rb")
+message = open("ciphertext", "rb")
 
-compare1 = bin(int(binascii.hexlify(message.read()), 16))
-compare2 = bin(int(binascii.hexlify(key.read()), 16))
-#print(len(compare1))
-#print(len(compare2))
-message.seek(0, os.SEEK_END)
-#print(message.tell())
+keyLength = len(open("key", "rb").read())
+messageLength = len(open("ciphertext", "rb").read())
 
-key.seek(0, os.SEEK_END)
-#print(key.tell())
-sub = len(compare2) - len(compare1)
-#print sub
+print (keyLength)
+print (messageLength)
 
-#print(len(compare2))
-binaryString = int(compare1, 2) ^ int(compare2, 2)
+if (keyLength > messageLength): ##This if statment will handle if the key is larger then the message
+    bytesToRead = keyLength - (keyLength - messageLength) ##We get the number if bytes we actually need and read to
+    messageBinary = bin(int(binascii.hexlify(message.read(bytesToRead)), 16))  #that number
+    keyBinary = bin(int(binascii.hexlify(key.read(bytesToRead)), 16))
+elif (messageLength > keyLength):           ## This if statment handles if the message is larger then the key
+    extraBytes = messageLength - keyLength  ##if so we will go back to the start of the file and read the bytes so they are even
+    messageBinary = bin(int(binascii.hexlify(message.read()), 16))
+    keyBinary = bin(int(binascii.hexlify(key.read()), 16))
+    key.seek(0, 0)
+    keyBinary += bin(int(binascii.hexlify(key.read(extraBytes)), 16))[2:]
+else:
+    messageBinary = bin(int(binascii.hexlify(message.read()), 16))
+    keyBinary = bin(int(binascii.hexlify(key.read()), 16))
 
-real = bin(binaryString)
-#print len(real)
-returnString = int(real, 2)
-pic = binascii.unhexlify('%x' % returnString)
-#print pic
+binaryString = int(messageBinary[2:], 2) ^ int(keyBinary[2:], 2) ##We xor the message and key
+returnString = int(bin(binaryString), 2) ##Here we turn binary into a very large numeber
+print(returnString)
+print(binascii.unhexlify('%x' % returnString)) ##We turn that binary into ascii

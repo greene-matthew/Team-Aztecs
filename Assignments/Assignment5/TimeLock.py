@@ -1,35 +1,19 @@
+import sys
 import time
 import hashlib
 
 format = "%Y %m %d %H %M %S"
 
-# epochTime = int(time.time())
-epochTimeInput = "1999 12 31 23 59 59"
-epochTimeStruct = time.strptime(epochTimeInput, format)
 
-epochTimeSec = epochTimeStruct.tm_sec
-epochTime = time.mktime(epochTimeStruct)
-
-systemTimeInput = "2013 05 06 07 43 25"
-systemTimeStruct = time.strptime(systemTimeInput, format)
-systemTimeSec = systemTimeStruct.tm_sec
-systemTime = time.mktime(systemTimeStruct)
-
-timeElapsedInt = int(systemTime) - int(epochTime)
-
-if (systemTimeSec > epochTimeSec):
-    timeElapsedInt -= (systemTimeSec - epochTimeSec)
-elif (systemTimeSec < epochTimeSec):
-    timeElapsedInt -= (60 % epochTimeSec) + systemTimeSec
-
-timeElapsed = str(timeElapsedInt)
-
-firstHash = hashlib.md5(timeElapsed).hexdigest()
-
-hashString = hashlib.md5(firstHash).hexdigest()
+def getSystemTime():
+    systemTimeInput = "2017 04 26 15 14 30"
+    systemTimeStruct = time.strptime(systemTimeInput, format)
+    return systemTimeStruct
 
 
-def getCode(hashString):
+def getCode(timeElapsed):
+    firstHash = hashlib.md5(timeElapsed).hexdigest()
+    hashString = hashlib.md5(firstHash).hexdigest()
     returnString = ""
     alphaCount = 0
     numCount = 0
@@ -49,6 +33,19 @@ def getCode(hashString):
                 break
     return returnString
 
-print getCode(hashString)
 
-print 60 % 59
+# epochTime = int(time.time())
+epochTimeInput = sys.stdin.read().replace('"', '').strip()
+epochTimeStruct = time.strptime(epochTimeInput, format)
+epochTimeSec = epochTimeStruct.tm_sec
+epochTime = time.mktime(epochTimeStruct)
+
+systemTimeStruct = getSystemTime()
+timeElapsed = int(time.mktime(systemTimeStruct)) - int(epochTime)
+
+if systemTimeStruct.tm_sec > epochTimeSec:
+    timeElapsed -= (systemTimeStruct.tm_sec - epochTimeSec)
+elif systemTimeStruct.tm_sec < epochTimeSec:
+    timeElapsed -= (60 % epochTimeSec) + systemTimeStruct.tm_sec
+
+print getCode(str(timeElapsed))
