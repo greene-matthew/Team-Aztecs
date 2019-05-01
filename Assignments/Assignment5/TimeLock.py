@@ -1,12 +1,16 @@
 import sys
 import time
 import hashlib
+from datetime import datetime
 
 format = "%Y %m %d %H %M %S"
 
 
 def getSystemTime():
-    systemTimeInput = "2017 04 26 15 14 30"
+    #systemTimeInput = "2017 04 26 15 14 30"
+    #now = datetime.now()
+    
+    systemTimeInput = datetime.now().strftime(format)
     systemTimeStruct = time.strptime(systemTimeInput, format)
     return systemTimeStruct
 
