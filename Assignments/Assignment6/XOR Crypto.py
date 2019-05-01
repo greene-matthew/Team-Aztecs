@@ -1,13 +1,13 @@
 import binascii
 
-key = open("key", "rb")
-message = open("ciphertext", "rb")
+key = open("key2", "rb")
+message = open("ciphertext2", "rb")
 
-keyLength = len(open("key", "rb").read())
-messageLength = len(open("ciphertext", "rb").read())
+keyLength = len(open("key2", "rb").read())
+messageLength = len(open("ciphertext2", "rb").read())
 
-print (keyLength)
-print (messageLength)
+#print (keyLength)
+#print (messageLength)
 
 if (keyLength > messageLength): ##This if statment will handle if the key is larger then the message
     bytesToRead = keyLength - (keyLength - messageLength) ##We get the number if bytes we actually need and read to
@@ -25,5 +25,5 @@ else:
 
 binaryString = int(messageBinary[2:], 2) ^ int(keyBinary[2:], 2) ##We xor the message and key
 returnString = int(bin(binaryString), 2) ##Here we turn binary into a very large numeber
-print(returnString)
+##print(returnString)
 print(binascii.unhexlify('%x' % returnString)) ##We turn that binary into ascii
