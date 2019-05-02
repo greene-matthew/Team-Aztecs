@@ -1,80 +1,164 @@
 import binascii
+import math
 import sys
-import parser
 import argparse
-import re
-
 import os
-import time
-
 
 sentinel = '00ff0000ff00'
-sentinel.decode("hex")
+sentinelHex = binascii.hexlify(sentinel)
+sentinelHex = map(''.join, zip(sentinelHex[::2], sentinelHex[1::2]))
 
 
-def byteMethodStore(wrapperFile, interval, hiddenFile, offset):
+def byteMethodStore(wrapperFileHex, interval, hiddenFileHex, offset):
+    o = offset
     i = 0
-    while i < len(hiddenFile):
-        wrapperFile[offset] = hiddenFile[interval]
-        offset += interval
+    while i < len(hiddenFileHex):
+        wrapperFileHex[o] = hiddenFileHex[i]
+        o += interval
         i += 1
 
     i = 0
-    while i < len(sentinel):
-        wrapperFile[offset] = sentinel[i]
-        offset += interval
+    while i < len(sentinelHex):
+        wrapperFileHex[o] = sentinelHex[i]
+        o += interval
         i += 1
 
+    return "".join(wrapperFileHex).decode("hex")
 
-def byteMethodRetreive(hexlist, interval, offset, wrapperFileSize):
+
+def bitMethodStore(wrapperFileHex, interval, hiddenFileHex, offset):
     i = offset
-    resultString = ""
-    while i < wrapperFileSize:
+    j = 0
+    returnString = ""
 
-        t = hexlist[i]
-        resultString += t
-        if '00ff0000ff00' in resultString:
+    while j < len(hiddenFileHex):
+        hByte = int(hiddenFileHex[j], 16)
+        for k in range(8):
+            wByte = int(wrapperFileHex[i], 16)
+            wByte &= 11111110
+            wByte |= ((hByte & 10000000) >> 7)
+            wrapperFileHex[i] = binascii.hexlify('%x' % wByte)
+            if (k != 7):
+                hByte = hByte << 1
+            i += interval
+        j += 1
+
+    n = 0
+    while n < len(sentinelHex):
+        sByte = int(sentinelHex[n], 16)
+        for k in range(8):
+            wByte = int(wrapperFileHex[i], 16)
+            wByte &= 11111110
+            wByte |= ((sByte & 10000000) >> 7)
+            wrapperFileHex[i] = binascii.hexlify('%x' % wByte)
+            if (k != 7):
+                sByte = sByte << 1
+            i += interval
+        n += 1
+
+    returnString += "".join(wrapperFileHex)
+    return returnString.decode("hex")
+
+
+def byteMethodRetreive(wrapperFileHex, interval, offset):
+    returnString = ""
+
+    i = offset
+    while i < len(wrapperFileHex):
+        t = wrapperFileHex[i]
+        returnString += t
+        if sentinel in returnString:
+            returnString = returnString[:-6]
             break
 
         i += interval
-    return resultString.decode("hex")
+    return returnString.decode("hex")
 
 
-
-
-
-def bitMethodRetreive(wrapperFile, interval, offset, wrapperFileSize):
+def bitMethodRetreive(wrapperFileHex, interval, offset):
     i = offset
     returnString = ""
 
-    while i < wrapperFileSize:
-
+    while i < len(wrapperFileHex):
         byte = 00000000
-
         for k in range(8):
-            wrapperFile.seek(i, 0)
-            read = wrapperFile.read(1)
-            wbyte = ord(read)
-            bit = wbyte & 00000001
+            wByte = int(wrapperFileHex[i], 16)
+            bit = wByte & 00000001
             byte |= bit
-            if(k != 7):
-
+            if (k != 7):
                 byte = byte << 1
             i += interval
 
         returnString += chr(byte)
-        if( '00ff0000ff00'.decode("hex") in returnString):
+        if (sentinel.decode("hex") in returnString):
             returnString = returnString[:-6]
             break
+
     return returnString
 
 
-#wrapperFile = open("stegged-bit.bmp", "rb")
-#wrapperFileSize = os.stat("stegged-bit.bmp")
-wrapperFile = open("stegged-byte.bmp", "rb",)
-wrapperFileSize = os.stat("stegged-byte.bmp")
-with open("stegged-byte.bmp", "rb") as f:
-    hexdata = binascii.hexlify(f.read())
-#hexlist = map(''.join,zip(hexdata[::2],hexdata[1::2]))
-#sys.stdout.write(byteMethodRetreive(hexlist, 8, 1024, wrapperFileSize.st_size))
+parser = argparse.ArgumentParser(description="Arguments for Steg", add_help=False)
+parser.add_argument('-b', '--bit', default=False, action='store_true')
+parser.add_argument('-B', '--byte', default=False, action='store_true')
+parser.add_argument('-s', '--store', default=False, action='store_true')
+parser.add_argument('-r', '--retrieve', default=False, action='store_true')
+parser.add_argument('-o', '--offset', type=int)
+parser.add_argument('-i', '--interval', type=int)
+parser.add_argument('-w', '--wrapperFile', type=str)
+parser.add_argument('-h', '--hiddenFile', type=str)
+args = parser.parse_args()
 
+
+def main():
+    if (args.bit == False and args.byte == False) or (args.bit == True and args.byte == True):
+        print("please choose either the byte or bit method")
+        sys.exit()
+    elif (args.store == False and args.retrieve == False) or (args.store == True and args.retrieve == True):
+        print("please choose to either store or retrieve a hidden file")
+        sys.exit()
+    elif (args.offset == None):
+        print("Please specify an offset")
+        sys.exit()
+    elif (args.wrapperFile == None):
+        print("Specify a Wrapper File")
+        sys.exit()
+    elif (args.store == True and args.hiddenFile == None):
+        print("In order to store, specify a file to hide")
+        sys.exit()
+    elif (args.retrieve == True and args.interval == None):
+        print("Please specify a interval")
+        sys.exit()
+
+    wrapperFileHex = binascii.hexlify(open(args.wrapperFile,"rb").read())
+    wrapperFileHex = map(''.join, zip(wrapperFileHex[::2], wrapperFileHex[1::2]))
+
+    if args.bit == True and args.store == True:
+        hiddenFileHex = binascii.hexlify(open(args.hiddenFile, "rb").read())
+        hiddenFileHex = map(''.join, zip(hiddenFileHex[::2], hiddenFileHex[1::2]))
+        if (args.interval == None):
+            interval = 1
+        else:
+            interval = args.interval
+        return (bitMethodStore(wrapperFileHex, interval, hiddenFileHex, args.offset))
+
+    if args.bit == True and args.retrieve == True:
+        return (bitMethodRetreive(wrapperFileHex, args.interval, args.offset))
+
+    if args.byte == True and args.store == True:
+        hiddenFileHex = binascii.hexlify(open(args.hiddenFile, "rb").read())
+        hiddenFileHex = map(''.join, zip(hiddenFileHex[::2], hiddenFileHex[1::2]))
+        if (args.interval == None):
+            interval = math.floor((len(wrapperFileHex) - args.offset) / (len(hiddenFileHex) + 6))
+        else:
+            interval = args.interval
+        return (byteMethodStore(wrapperFileHex, interval, hiddenFileHex, args.offset))
+
+    if args.byte == True and args.retrieve == True:
+        return (byteMethodRetreive(wrapperFileHex, args.interval, args.offset))
+
+
+# wrapperFile = open("stegged-bit.bmp", "rb")
+# wrapperFileSize = os.stat("stegged-bit.bmp")
+print main()
+# hexlist = map(''.join,zip(hexdata[::2],hexdata[1::2]))
+# sys.stdout.write(byteMethodRetreive(hexlist, 8, 1024, wrapperFileSize.st_size))
