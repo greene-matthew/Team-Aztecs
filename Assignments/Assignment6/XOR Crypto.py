@@ -1,10 +1,29 @@
+# Aztecs
+# Behram Dossabhoy, Matthew Greene, Prasil Mainali, Logan Mccarthy, Joshua Mendoza, Louis Miller, Tracy Samanie
+# 30 April 2019
+# XOR Crypto
+# Github: https://github.com/greene-matthew/Team-Aztecs
+
+
 import binascii
+import os
+import sys
 
-key = open("key2", "rb")
-message = open("ciphertext2", "rb")
+if(sys.platform == 'win32'): ##This is so if this program is run on windos in gives the stdin in binary
+    import msvcrt
 
-keyLength = len(open("key2", "rb").read())
-messageLength = len(open("ciphertext2", "rb").read())
+    msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
+
+
+key = open("key", "rb")
+keyLength = len(open("key", "rb").read())
+
+message = sys.stdin ##
+message.seek(0,2)
+messageLength = message.tell()
+message.seek(0,0)
+
+
 
 #print (keyLength)
 #print (messageLength)
@@ -15,12 +34,12 @@ if (keyLength > messageLength): ##This if statment will handle if the key is lar
     keyBinary = bin(int(binascii.hexlify(key.read(bytesToRead)), 16))
 elif (messageLength > keyLength):           ## This if statment handles if the message is larger then the key
     extraBytes = messageLength - keyLength  ##if so we will go back to the start of the file and read the bytes so they are even
-    messageBinary = bin(int(binascii.hexlify(message.read()), 16))
+    messageBinary = bin(int(binascii.hexlify(message.read(messageLength)), 16))
     keyBinary = bin(int(binascii.hexlify(key.read()), 16))
     key.seek(0, 0)
     keyBinary += bin(int(binascii.hexlify(key.read(extraBytes)), 16))[2:]
 else:
-    messageBinary = bin(int(binascii.hexlify(message.read()), 16))
+    messageBinary = bin(int(binascii.hexlify(message.read(messageLength)), 16))
     keyBinary = bin(int(binascii.hexlify(key.read()), 16))
 
 binaryString = int(messageBinary[2:], 2) ^ int(keyBinary[2:], 2) ##We xor the message and key
