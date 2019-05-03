@@ -6,7 +6,11 @@ import os
 
 sentinel = '00ff0000ff00'
 sentinelHex = binascii.hexlify(sentinel)
-sentinelHex = map(''.join, zip(sentinelHex[::2], sentinelHex[1::2]))
+sentinelHex = map(''.join,
+                  zip(sentinelHex[::2], sentinelHex[1::2]))  ##I turn the sentineal, wrapper file and hidden file into
+
+
+##A list of hexacdemail values for easy extraction
 
 
 def byteMethodStore(wrapperFileHex, interval, hiddenFileHex, offset):
@@ -30,7 +34,10 @@ def bitMethodStore(wrapperFileHex, interval, hiddenFileHex, offset):
     i = offset
     j = 0
     returnString = ""
+    ##Hbyte means hidden file byte
+    # wByte means wrapper file byte
 
+    # I split up storing, so first it will hide the file and then add the sentinel
     while j < len(hiddenFileHex):
         hByte = int(hiddenFileHex[j], 16)
         for k in range(8):
@@ -64,6 +71,8 @@ def byteMethodRetreive(wrapperFileHex, interval, offset):
     returnString = ""
 
     i = offset
+
+    # Since this is a wrapper file hex list, we can just retrive the byte we need at i
     while i < len(wrapperFileHex):
         t = wrapperFileHex[i]
         returnString += t
@@ -97,7 +106,8 @@ def bitMethodRetreive(wrapperFileHex, interval, offset):
     return returnString
 
 
-parser = argparse.ArgumentParser(description="Arguments for Steg", add_help=False)
+parser = argparse.ArgumentParser(description="Arguments for Steg",
+                                 add_help=False)  ##This helps me parse the command line
 parser.add_argument('-b', '--bit', default=False, action='store_true')
 parser.add_argument('-B', '--byte', default=False, action='store_true')
 parser.add_argument('-s', '--store', default=False, action='store_true')
@@ -125,8 +135,8 @@ def main():
     elif (args.store == True and args.hiddenFile == None):
         print("In order to store, specify a file to hide")
         sys.exit()
-    
-    wrapperFileHex = binascii.hexlify(open(args.wrapperFile,"rb").read())
+
+    wrapperFileHex = binascii.hexlify(open(args.wrapperFile, "rb").read())
     wrapperFileHex = map(''.join, zip(wrapperFileHex[::2], wrapperFileHex[1::2]))
 
     if args.bit == True and args.store == True:
