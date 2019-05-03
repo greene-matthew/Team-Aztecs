@@ -1,3 +1,9 @@
+# Aztecs
+# Behram Dossabhoy, Matthew Greene, Prasil Mainali, Logan Mccarthy, Joshua Mendoza, Louis Miller, Tracy Samanie
+# 05/03/2019
+# Github: https://github.com/greene-matthew/Team-Aztecs
+
+
 import binascii
 import math
 import sys
@@ -75,13 +81,13 @@ def byteMethodRetreive(wrapperFileHex, interval, offset):
     # Since this is a wrapper file hex list, we can just retrive the byte we need at i
     while i < len(wrapperFileHex):
         t = wrapperFileHex[i]
-        returnString += t
-        if sentinel in returnString:
+        returnString += chr(t)
+        if sentinel.decode("hex") in returnString:
             returnString = returnString[:-6]
             break
 
         i += interval
-    return returnString.decode("hex")
+    return returnString
 
 
 def bitMethodRetreive(wrapperFileHex, interval, offset):
@@ -91,7 +97,7 @@ def bitMethodRetreive(wrapperFileHex, interval, offset):
     while i < len(wrapperFileHex):
         byte = 00000000
         for k in range(8):
-            wByte = int(wrapperFileHex[i], 16)
+            wByte = wrapperFileHex[i]
             bit = wByte & 00000001
             byte |= bit
             if (k != 7):
@@ -136,8 +142,8 @@ def main():
         print("In order to store, specify a file to hide")
         sys.exit()
 
-    wrapperFileHex = binascii.hexlify(open(args.wrapperFile, "rb").read())
-    wrapperFileHex = map(''.join, zip(wrapperFileHex[::2], wrapperFileHex[1::2]))
+    wrapperFileHex = bytearray(open(args.wrapperFile, "rb").read())
+    #wrapperFileHex = map(''.join, zip(wrapperFileHex[::2], wrapperFileHex[1::2]))
 
     if args.bit == True and args.store == True:
         hiddenFileHex = binascii.hexlify(open(args.hiddenFile, "rb").read())
