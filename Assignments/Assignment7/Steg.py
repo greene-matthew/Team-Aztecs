@@ -125,10 +125,7 @@ def main():
     elif (args.store == True and args.hiddenFile == None):
         print("In order to store, specify a file to hide")
         sys.exit()
-    elif (args.retrieve == True and args.interval == None):
-        print("Please specify a interval")
-        sys.exit()
-
+    
     wrapperFileHex = binascii.hexlify(open(args.wrapperFile,"rb").read())
     wrapperFileHex = map(''.join, zip(wrapperFileHex[::2], wrapperFileHex[1::2]))
 
@@ -142,7 +139,11 @@ def main():
         return (bitMethodStore(wrapperFileHex, interval, hiddenFileHex, args.offset))
 
     if args.bit == True and args.retrieve == True:
-        return (bitMethodRetreive(wrapperFileHex, args.interval, args.offset))
+        if (args.interval == None):
+            interval = 1
+        else:
+            interval = args.interval
+        return (bitMethodRetreive(wrapperFileHex, interval, args.offset))
 
     if args.byte == True and args.store == True:
         hiddenFileHex = binascii.hexlify(open(args.hiddenFile, "rb").read())
