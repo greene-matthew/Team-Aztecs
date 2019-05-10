@@ -35,7 +35,8 @@ def getCode(timeElapsed):
             numCount += 1
             if numCount == 2:
                 break
-    return returnString
+	length = len(hashString)	
+    return returnString + hashString[length/2]
 
 
 # epochTime = int(time.time())
