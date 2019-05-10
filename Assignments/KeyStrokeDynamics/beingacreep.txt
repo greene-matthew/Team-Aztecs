@@ -1,0 +1,100 @@
+Key.enter released
+u'g'
+u'g' pressed
+u'g' released
+u'o'
+u'o' pressed
+u'o' released
+u'o'
+u'o' pressed
+u'g'
+u'g' pressed
+u'o' released
+u'l'
+u'l' pressed
+u'g' released
+u'e'
+u'e' pressed
+u'l' released
+u'e' released
+u'.'
+u'.' pressed
+u'.' released
+u'c'
+u'c' pressed
+u'o'
+u'o' pressed
+u'c' released
+u'o' released
+u'm'
+u'm' pressed
+u'm' released
+Key.enter
+Key.enter pressed
+Key.enter released
+u's'
+u's' pressed
+u'p'
+u'p' pressed
+u's' released
+u'o'
+u'o' pressed
+u'p' released
+u'o' released
+u'i'
+u'i' pressed
+u'i' released
+u'l'
+u'l' pressed
+u'l' released
+u'e'
+u'e' pressed
+u'e' released
+u'r'
+u'r' pressed
+u'r' released
+u's'
+u's' pressed
+u's' released
+Key.space
+Key.space pressed
+Key.space released
+u'f'
+u'f' pressed
+u'f' released
+u'o'
+u'o' pressed
+u'o' released
+u'r'
+u'r' pressed
+u'r' released
+Key.space
+Key.space pressed
+Key.space released
+u'e'
+u'e' pressed
+u'e' released
+u'n'
+u'n' pressed
+u'n' released
+u'd'
+u'd' pressed
+u'd' released
+u'g'
+u'g' pressed
+u'g' released
+u'a'
+u'a' pressed
+u'm'
+u'm' pressed
+u'a' released
+u'm' released
+u'e'
+u'e' pressed
+u'e' released
+Key.enter
+Key.enter pressed
+Key.enter released
+Key.esc
+Key.esc pressed
+Key.esc released
