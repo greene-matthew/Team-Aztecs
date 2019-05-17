@@ -9,7 +9,7 @@ format = "%Y %m %d %H %M %S"
 def getSystemTime():
     #systemTimeInput = "2017 04 26 15 14 30"
     #now = datetime.now()
-    
+
     systemTimeInput = datetime.now().strftime(format)
     systemTimeStruct = time.strptime(systemTimeInput, format)
     return systemTimeStruct
@@ -35,8 +35,8 @@ def getCode(timeElapsed):
             numCount += 1
             if numCount == 2:
                 break
-	length = len(hashString)	
-    return returnString + hashString[length/2]
+	length = len(hashString)
+    return returnString + hashString[length-1]
 
 
 # epochTime = int(time.time())
