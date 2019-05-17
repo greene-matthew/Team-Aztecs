@@ -15,8 +15,8 @@ if(sys.platform == 'win32'): ##This is so if this program is run on windos in gi
     msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
 
 
-key = open("key", "rb")
-keyLength = len(open("key", "rb").read())
+key = open("file2", "rb")
+keyLength = len(open("file2", "rb").read())
 
 message = sys.stdin ##
 message.seek(0,2)
