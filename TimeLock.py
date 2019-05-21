@@ -9,15 +9,17 @@ format = "%Y %m %d %H %M %S"
 def getSystemTime():
     #systemTimeInput = "2017 04 26 15 14 30"
     #now = datetime.now()
-    
+
     systemTimeInput = datetime.now().strftime(format)
     systemTimeStruct = time.strptime(systemTimeInput, format)
     return systemTimeStruct
 
 
 def getCode(timeElapsed):
-    firstHash = hashlib.md5(timeElapsed).hexdigest()
-    hashString = hashlib.md5(firstHash).hexdigest()
+
+
+    firstHash = hashlib.md5(timeElapsed).hexdigest() ##First Hash
+    hashString = hashlib.md5(firstHash).hexdigest()  #Final Hash
     returnString = ""
     alphaCount = 0
     numCount = 0
@@ -35,8 +37,12 @@ def getCode(timeElapsed):
             numCount += 1
             if numCount == 2:
                 break
-	length = len(hashString)	
-    return returnString + hashString[length-1]
+
+	length = len(hashString)
+
+    return returnString + hashString[length]
+
+#xxxxACB where A is First char of the final hash and C is the FirstHash/2 char and B is the third letter of the final hash
 
 
 # epochTime = int(time.time())

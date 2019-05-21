@@ -19,7 +19,9 @@ def permissionsToBinary(permissionString):
             binaryString += "1"
     return binaryString
 
-
+#server = ftplib.FTP()
+#server.connect(host,port)
+#server.login(username,password)
 server = ftplib.FTP('www.jeangourd.com', 'anonymous', '')
 #Change the value if you need to change directory
 #server.cwd('7')

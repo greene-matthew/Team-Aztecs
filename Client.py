@@ -79,7 +79,7 @@ def main():
 	s.close()
 
 	# Below is an array of the times bewteen each char
-	print(times)
+	#print(times)
 
 	print(binaryToAscci(convertTimesToBinary(times)))
 
