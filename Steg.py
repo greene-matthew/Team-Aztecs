@@ -82,9 +82,6 @@ def byteMethodRetreive(wrapperFileHex, interval, offset):
     while i < len(wrapperFileHex):
         t = wrapperFileHex[i]
         returnString += chr(t)
-        if sentinel.decode("hex") in returnString:
-            returnString = returnString[:-6]
-            break
 
         i += interval
     return returnString
@@ -94,20 +91,21 @@ def bitMethodRetreive(wrapperFileHex, interval, offset):
     i = offset
     returnString = ""
 
-    while i < len(wrapperFileHex):
-        byte = 00000000
-        for k in range(8):
-            wByte = wrapperFileHex[i]
-            bit = wByte & 00000001
-            byte |= bit
-            if (k != 7):
-                byte = byte << 1
-            i += interval
+    try:
+        while i < len(wrapperFileHex):
+            byte = 00000000
+            for k in range(8):
+                wByte = wrapperFileHex[i]
+                bit = wByte & 00000001
+                byte |= bit
+                if (k != 7):
+                    byte = byte << 1
+                i += interval
 
-        returnString += chr(byte)
-        if (sentinel.decode("hex") in returnString):
-            returnString = returnString[:-6]
-            break
+            returnString += chr(byte)
+    except:
+        return returnString
+
 
     return returnString
 
@@ -159,7 +157,12 @@ def main():
             interval = 1
         else:
             interval = args.interval
-        return (bitMethodRetreive(wrapperFileHex, interval, args.offset))
+
+        returnString =(bitMethodRetreive(wrapperFileHex, interval, args.offset))
+        indexOfSentinel = returnString.find(sentinel.decode("hex"))
+        if (indexOfSentinel != -1):
+            return returnString[:indexOfSentinel]
+        return "Did not find"
 
     if args.byte == True and args.store == True:
         hiddenFileHex = binascii.hexlify(open(args.hiddenFile, "rb").read())
@@ -171,8 +174,11 @@ def main():
         return (byteMethodStore(wrapperFileHex, interval, hiddenFileHex, args.offset))
 
     if args.byte == True and args.retrieve == True:
-        return (byteMethodRetreive(wrapperFileHex, args.interval, args.offset))
-
+        returnString = (byteMethodRetreive(wrapperFileHex, args.interval, args.offset))
+        indexOfSentinel = returnString.find(sentinel.decode("hex"))
+        if (indexOfSentinel != -1):
+            return returnString[:indexOfSentinel]
+        return "Did not find"
 
 # wrapperFile = open("stegged-bit.bmp", "rb")
 # wrapperFileSize = os.stat("stegged-bit.bmp")
