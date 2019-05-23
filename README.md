@@ -62,6 +62,6 @@ Here you can only one of the methods. The -b: Bit method or -B: Byte method.
 The offset needs to be preset, the interval is the interval between each bit or byte and
 the wrapper file is the file that you are extrating from.
 When using the -b bit method, the interval does not need to be specified.
-> python Steg.py -B -r -o1024 -i8 -w stegged-byte.bmp > timeTest.txt  
-> python Steg.py -b -r -o1024 -i8 -w stegged-byte.bmp > timeTest.txt  
-> python Steg.py -b -r -o1024 -w stegged-byte.bmp > timeTest.txt  
+> python Steg.py -B -r -o1024 -i8 -wstegged-byte.bmp > timeTest.txt  
+> python Steg.py -b -r -o1024 -i8 -wstegged-byte.bmp > timeTest.txt  
+> python Steg.py -b -r -o1024 -wstegged-byte.bmp > timeTest.txt  
