@@ -10,20 +10,21 @@ import parser
 import argparse
 import re
 
+#alp = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+#lengthOfAlp = len(alp)
+lengthOfAlp = 26
 
 
 def upperOrLower(char):
-    if(char.isupper()):
-        return ord(char)-65
-    else:
-        return ord(char)-97
+    char = char.upper()
+    return ord(char) - 65
 
 def getChar(char, plainValue, keyValue):
 
     if(not args.encode == None):
-        returnString = (plainValue + keyValue) % 26
+        returnString = (plainValue + keyValue) % lengthOfAlp
     else:
-        returnString = (plainValue - keyValue) % 26
+        returnString = (plainValue - keyValue) % lengthOfAlp
 
     returnString+=97
     returnString = chr(returnString)
@@ -53,9 +54,9 @@ def encodeOrDecode(str,encodeKey,decodeKey):
             if keyCount > len(key)-1:
                 plainTextValue = upperOrLower(char)
 
-                keyCount = 0
 
-                keyTextValue = upperOrLower(key[keyCount])
+                keyTextValue = upperOrLower(key[keyCount % (len(key))])
+
 
                 returnString += getChar(char,plainTextValue,keyTextValue)
 
