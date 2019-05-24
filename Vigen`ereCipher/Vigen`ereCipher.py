@@ -53,7 +53,9 @@ def encodeOrDecode(str,encodeKey,decodeKey):
             if keyCount > len(key)-1:
                 plainTextValue = upperOrLower(char)
 
-                keyTextValue = upperOrLower(key[keyCount-(len(key))])
+                keyCount = 0
+
+                keyTextValue = upperOrLower(key[keyCount])
 
                 returnString += getChar(char,plainTextValue,keyTextValue)
 
