@@ -38,9 +38,9 @@ def getCode(timeElapsed):
             if numCount == 2:
                 break
 
-	length = len(hashString)
+	#length = len(hashString)
 
-    return returnString + hashString[length]
+    return returnString
 
 #xxxxACB where A is First char of the final hash and C is the FirstHash/2 char and B is the third letter of the final hash
 
